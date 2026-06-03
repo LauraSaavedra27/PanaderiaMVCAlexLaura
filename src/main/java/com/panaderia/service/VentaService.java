@@ -3,6 +3,7 @@ package com.panaderia.service;
 import com.panaderia.model.*;
 import com.panaderia.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,34 +13,46 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ProductoRepository productoRepository;
     private final ClienteRepository clienteRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
 
     public VentaService(VentaRepository ventaRepository,
                         ProductoRepository productoRepository,
-                        ClienteRepository clienteRepository) {
+                        ClienteRepository clienteRepository,
+                        DetalleVentaRepository detalleVentaRepository) {
         this.ventaRepository = ventaRepository;
         this.productoRepository = productoRepository;
         this.clienteRepository = clienteRepository;
+        this.detalleVentaRepository = detalleVentaRepository;
     }
 
     public List<Venta> listar() {
         return ventaRepository.findAll();
     }
 
+    @Transactional
     public Venta guardar(Venta venta) {
+
+        if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
+            throw new RuntimeException("Debes agregar al menos un producto a la venta");
+        }
 
         Cliente cliente = clienteRepository.findById(venta.getCliente().getId())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         venta.setCliente(cliente);
         venta.setFecha(java.time.LocalDate.now());
 
-        // Estado por defecto si no se seleccionó
         if (venta.getEstado() == null) {
             venta.setEstado(EstadoVenta.PENDIENTE);
         }
 
+        List<DetalleVenta> detalles = venta.getDetalles();
+        venta.setDetalles(new java.util.ArrayList<>());
+
+        Venta ventaGuardada = ventaRepository.saveAndFlush(venta);
+
         double total = 0;
 
-        for (DetalleVenta detalle : venta.getDetalles()) {
+        for (DetalleVenta detalle : detalles) {
 
             Producto producto = productoRepository.findById(detalle.getProducto().getId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -53,9 +66,14 @@ public class VentaService {
             }
 
             double subtotal = producto.getPrecio() * detalle.getCantidad();
-            detalle.setProducto(producto);
-            detalle.setSubtotal(subtotal);
-            detalle.setVenta(venta);
+
+            DetalleVenta nuevoDetalle = new DetalleVenta();
+            nuevoDetalle.setVenta(ventaGuardada);
+            nuevoDetalle.setProducto(producto);
+            nuevoDetalle.setCantidad(detalle.getCantidad());
+            nuevoDetalle.setSubtotal(subtotal);
+
+            detalleVentaRepository.save(nuevoDetalle);
 
             producto.setStock(producto.getStock() - detalle.getCantidad());
             productoRepository.save(producto);
@@ -63,8 +81,8 @@ public class VentaService {
             total += subtotal;
         }
 
-        venta.setTotal(total);
-        return ventaRepository.save(venta);
+        ventaGuardada.setTotal(total);
+        return ventaRepository.save(ventaGuardada);
     }
 
     public Venta actualizarEstado(Long id, EstadoVenta nuevoEstado) {

@@ -42,8 +42,16 @@ public class VentaController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Venta venta) {
-        ventaService.guardar(venta);
+    public String guardar(@ModelAttribute Venta venta, Model model) {
+        try {
+            ventaService.guardar(venta);
+        } catch (Exception e) {
+            model.addAttribute("clientes", clienteService.listar());
+            model.addAttribute("productos", productoService.listar());
+            model.addAttribute("estados", EstadoVenta.values());
+            model.addAttribute("error", "Error al guardar: " + e.getMessage());
+            return "ventas/form";
+        }
         return "redirect:/ventas";
     }
 

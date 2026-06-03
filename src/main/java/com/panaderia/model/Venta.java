@@ -2,9 +2,11 @@ package com.panaderia.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "ventas")
 public class Venta {
 
     @Id
@@ -14,8 +16,8 @@ public class Venta {
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<DetalleVenta> detalles;
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleVenta> detalles = new ArrayList<>();
 
     private Double total;
     private LocalDate fecha;

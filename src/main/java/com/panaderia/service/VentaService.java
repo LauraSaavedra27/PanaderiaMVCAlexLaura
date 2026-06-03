@@ -5,6 +5,7 @@ import com.panaderia.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,16 +14,13 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ProductoRepository productoRepository;
     private final ClienteRepository clienteRepository;
-    private final DetalleVentaRepository detalleVentaRepository;
 
     public VentaService(VentaRepository ventaRepository,
                         ProductoRepository productoRepository,
-                        ClienteRepository clienteRepository,
-                        DetalleVentaRepository detalleVentaRepository) {
+                        ClienteRepository clienteRepository) {
         this.ventaRepository = ventaRepository;
         this.productoRepository = productoRepository;
         this.clienteRepository = clienteRepository;
-        this.detalleVentaRepository = detalleVentaRepository;
     }
 
     public List<Venta> listar() {
@@ -45,14 +43,14 @@ public class VentaService {
             venta.setEstado(EstadoVenta.PENDIENTE);
         }
 
-        List<DetalleVenta> detalles = venta.getDetalles();
-        venta.setDetalles(new java.util.ArrayList<>());
-
-        Venta ventaGuardada = ventaRepository.saveAndFlush(venta);
-
         double total = 0;
+        List<DetalleVenta> detallesValidos = new ArrayList<>();
 
-        for (DetalleVenta detalle : detalles) {
+        for (DetalleVenta detalle : venta.getDetalles()) {
+
+            if (detalle.getProducto() == null || detalle.getProducto().getId() == null) {
+                continue;
+            }
 
             Producto producto = productoRepository.findById(detalle.getProducto().getId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -66,23 +64,25 @@ public class VentaService {
             }
 
             double subtotal = producto.getPrecio() * detalle.getCantidad();
-
-            DetalleVenta nuevoDetalle = new DetalleVenta();
-            nuevoDetalle.setVenta(ventaGuardada);
-            nuevoDetalle.setProducto(producto);
-            nuevoDetalle.setCantidad(detalle.getCantidad());
-            nuevoDetalle.setSubtotal(subtotal);
-
-            detalleVentaRepository.save(nuevoDetalle);
+            detalle.setProducto(producto);
+            detalle.setSubtotal(subtotal);
+            detalle.setVenta(venta); // ← clave: apunta al objeto venta antes de guardar
 
             producto.setStock(producto.getStock() - detalle.getCantidad());
             productoRepository.save(producto);
 
             total += subtotal;
+            detallesValidos.add(detalle);
         }
 
-        ventaGuardada.setTotal(total);
-        return ventaRepository.save(ventaGuardada);
+        if (detallesValidos.isEmpty()) {
+            throw new RuntimeException("Debes agregar al menos un producto válido");
+        }
+
+        venta.setDetalles(detallesValidos);
+        venta.setTotal(total);
+
+        return ventaRepository.save(venta); // cascade guarda los detalles automáticamente
     }
 
     public Venta actualizarEstado(Long id, EstadoVenta nuevoEstado) {

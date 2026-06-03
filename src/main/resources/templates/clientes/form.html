@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Cliente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container mt-4">
+
+<h2>Nuevo Cliente</h2>
+
+<form th:action="@{/clientes/guardar}" th:object="${cliente}" method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" class="form-control" th:field="*{nombre}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Documento de identidad</label>
+        <input type="text" class="form-control" th:field="*{documento}" required
+               placeholder="Ej: 1234567890">
+    </div>
+
+    <div class="mb-3">
+        <label>Teléfono</label>
+        <input type="text" class="form-control" th:field="*{telefono}">
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" th:field="*{email}">
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a class="btn btn-secondary" th:href="@{/clientes}">Volver</a>
+
+</form>
+
+</body>
+</html>

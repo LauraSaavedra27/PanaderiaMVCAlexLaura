@@ -1,0 +1,126 @@
+/* =========================
+   FONDO GENERAL
+========================= */
+
+html, body {
+    background-color: #F7DB94 !important;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #2C3E50;
+}
+
+/* =========================
+   TÍTULOS
+========================= */
+
+h1, h2, h3 {
+    font-weight: 700;
+    color: #2C3E50;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn {
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* primario */
+.btn-primary {
+    background-color: #4E73DF;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #2E59D9;
+}
+
+/* secundario */
+.btn-secondary {
+    background-color: #6C757D;
+    border: none;
+}
+
+/* éxito */
+.btn-success {
+    background-color: #1CC88A;
+    border: none;
+}
+
+/* peligro */
+.btn-danger {
+    background-color: #E74A3B;
+    border: none;
+}
+
+/* advertencia */
+.btn-warning {
+    background-color: #F6C23E;
+    border: none;
+    color: black;
+}
+
+/* info */
+.btn-info {
+    background-color: #36B9CC;
+    border: none;
+}
+
+/* =========================
+   TABLAS
+========================= */
+
+table {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.table-dark {
+    background-color: #2C3E50 !important;
+}
+
+/* =========================
+   FORMULARIOS
+========================= */
+
+input, select {
+    border-radius: 10px !important;
+    border: 1px solid #ccc !important;
+}
+
+input:focus, select:focus {
+    border-color: #4E73DF !important;
+    box-shadow: 0 0 6px rgba(78,115,223,0.4) !important;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    transition: 0.2s;
+}
+
+/* =========================
+   CONTENEDOR
+========================= */
+
+.container {
+    max-width: 1100px;
+}

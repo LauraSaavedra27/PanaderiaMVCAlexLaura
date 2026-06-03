@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container mt-4">
+
+<h2>Ventas</h2>
+
+<a href="/ventas/nuevo" class="btn btn-success">Nueva venta</a>
+<a href="/" class="btn btn-dark">Menú</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Productos</th>
+        <th>Total</th>
+        <th>Fecha</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="v : ${ventas}">
+        <td th:text="${v.id}"></td>
+        <td th:text="${v.cliente != null ? v.cliente.nombre : 'N/A'}"></td>
+        <td>
+            <ul class="mb-0">
+                <li th:each="d : ${v.detalles}"
+                    th:text="${d.producto.nombre + ' x' + d.cantidad + ' = $' + d.subtotal}">
+                </li>
+            </ul>
+        </td>
+        <td th:text="${'$' + v.total}"></td>
+        <td th:text="${v.fecha}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

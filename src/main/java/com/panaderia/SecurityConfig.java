@@ -33,7 +33,19 @@ public class SecurityConfig {
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**").permitAll()
-                        .requestMatchers("/usuarios/nuevo", "/usuarios/guardar").permitAll()
+
+                        // Solo ADMIN puede gestionar usuarios y categorías
+                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers("/categorias/**").hasRole("ADMIN")
+
+                        // Solo ADMIN puede eliminar clientes y productos
+                        .requestMatchers("/clientes/eliminar/**").hasRole("ADMIN")
+                        .requestMatchers("/productos/eliminar/**").hasRole("ADMIN")
+
+                        // Solo ADMIN puede crear/editar productos
+                        .requestMatchers("/productos/nuevo", "/productos/guardar", "/productos/editar/**").hasRole("ADMIN")
+
+                        // Todo lo demás requiere estar autenticado
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

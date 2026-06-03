@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Formulario Categoría</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario Categoría')}"></head>
 
-<body class="container mt-4">
+<body>
 
-<h2>Formulario Categoría</h2>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
 
-<form th:action="@{/categorias/guardar}" th:object="${categoria}" method="post">
+<div class="main-content">
 
-    <input type="hidden" th:field="*{id}"/>
+    <h2><i class="bi bi-tags-fill"></i> Categoría</h2>
 
-    <div class="mb-3">
-        <label>Nombre</label>
-        <input type="text" class="form-control" th:field="*{nombre}" required>
+    <div class="card" style="max-width: 600px;">
+        <div class="card-body p-4">
+
+            <form th:action="@{/categorias/guardar}" th:object="${categoria}" method="post">
+
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="mb-3">
+                    <label><i class="bi bi-tag"></i> Nombre</label>
+                    <input type="text" class="form-control" th:field="*{nombre}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label><i class="bi bi-text-left"></i> Descripción</label>
+                    <input type="text" class="form-control" th:field="*{descripcion}">
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
+                    <a class="btn btn-secondary" th:href="@{/categorias}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
     </div>
 
-    <button class="btn btn-success">Guardar</button>
-
-    <a class="btn btn-secondary" th:href="@{/categorias}">
-        Volver
-    </a>
-
-</form>
+</div>
 
 </body>
 </html>

@@ -20,6 +20,9 @@ public class Venta {
     private Double total;
     private LocalDate fecha;
 
+    @Enumerated(EnumType.STRING)
+    private EstadoVenta estado;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -34,4 +37,7 @@ public class Venta {
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+
+    public EstadoVenta getEstado() { return estado; }
+    public void setEstado(EstadoVenta estado) { this.estado = estado; }
 }

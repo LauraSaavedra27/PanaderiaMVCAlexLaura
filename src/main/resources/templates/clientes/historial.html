@@ -25,12 +25,13 @@
             <th>Productos</th>
             <th>Total</th>
             <th>Fecha</th>
+            <th>Estado</th>
         </tr>
         </thead>
         <tbody>
 
         <tr th:if="${ventas == null || #lists.isEmpty(ventas)}">
-            <td colspan="4" class="text-center">No hay compras registradas</td>
+            <td colspan="5" class="text-center">No hay compras registradas</td>
         </tr>
 
         <tr th:each="v : ${ventas}">
@@ -44,6 +45,14 @@
             </td>
             <td th:text="${'$' + v.total}"></td>
             <td th:text="${v.fecha}"></td>
+            <!-- ✅ Badge de color según estado -->
+            <td>
+                <span th:text="${v.estado}"
+                      th:classappend="${v.estado != null and v.estado.name() == 'PENDIENTE'} ? 'badge bg-warning text-dark' :
+                                      (${v.estado != null and v.estado.name() == 'PAGADO'} ? 'badge bg-success' :
+                                      'badge bg-primary')">
+                </span>
+            </td>
         </tr>
 
         </tbody>

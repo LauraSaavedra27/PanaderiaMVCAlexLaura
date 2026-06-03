@@ -41,7 +41,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // ← NUEVO: cargar datos del cliente en el formulario
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("cliente", clienteService.buscarPorId(id));
@@ -54,4 +53,17 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
+    // ✅ CORRECCIÓN: endpoint que faltaba — resuelve el error 404
+    @GetMapping("/{id}/historial")
+    public String historial(@PathVariable Long id, Model model) {
+        Cliente cliente = clienteService.buscarPorId(id);
+        List<Venta> ventas = ventaRepository.findByClienteId(id);
+        double totalGeneral = ventas.stream()
+                .mapToDouble(v -> v.getTotal() != null ? v.getTotal() : 0)
+                .sum();
+        model.addAttribute("cliente", cliente);
+        model.addAttribute("ventas", ventas);
+        model.addAttribute("totalGeneral", totalGeneral);
+        return "clientes/historial";
+    }
 }

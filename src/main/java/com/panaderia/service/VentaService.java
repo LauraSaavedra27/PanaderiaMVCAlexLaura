@@ -32,6 +32,11 @@ public class VentaService {
         venta.setCliente(cliente);
         venta.setFecha(java.time.LocalDate.now());
 
+        // Estado por defecto si no se seleccionó
+        if (venta.getEstado() == null) {
+            venta.setEstado(EstadoVenta.PENDIENTE);
+        }
+
         double total = 0;
 
         for (DetalleVenta detalle : venta.getDetalles()) {
@@ -59,6 +64,13 @@ public class VentaService {
         }
 
         venta.setTotal(total);
+        return ventaRepository.save(venta);
+    }
+
+    public Venta actualizarEstado(Long id, EstadoVenta nuevoEstado) {
+        Venta venta = ventaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        venta.setEstado(nuevoEstado);
         return ventaRepository.save(venta);
     }
 }

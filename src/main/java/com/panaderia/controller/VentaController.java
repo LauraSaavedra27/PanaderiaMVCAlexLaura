@@ -32,17 +32,25 @@ public class VentaController {
     public String nuevo(Model model) {
         Venta venta = new Venta();
         venta.setDetalles(new java.util.ArrayList<>());
-        venta.getDetalles().add(new DetalleVenta()); // una fila inicial
+        venta.getDetalles().add(new DetalleVenta());
 
         model.addAttribute("venta", venta);
         model.addAttribute("clientes", clienteService.listar());
         model.addAttribute("productos", productoService.listar());
+        model.addAttribute("estados", EstadoVenta.values());
         return "ventas/form";
     }
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Venta venta) {
         ventaService.guardar(venta);
+        return "redirect:/ventas";
+    }
+
+    @PostMapping("/{id}/estado")
+    public String cambiarEstado(@PathVariable Long id,
+                                @RequestParam EstadoVenta estado) {
+        ventaService.actualizarEstado(id, estado);
         return "redirect:/ventas";
     }
 }

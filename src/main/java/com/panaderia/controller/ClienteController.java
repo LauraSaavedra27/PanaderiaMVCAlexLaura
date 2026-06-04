@@ -53,7 +53,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // ✅ CORRECCIÓN: endpoint que faltaba — resuelve el error 404
     @GetMapping("/{id}/historial")
     public String historial(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id);

@@ -45,7 +45,7 @@
             </td>
             <td th:text="${'$' + v.total}"></td>
             <td th:text="${v.fecha}"></td>
-            <!-- ✅ Badge de color según estado -->
+            <!-- pone color según estado -->
             <td>
                 <span th:text="${v.estado}"
                       th:classappend="${v.estado != null and v.estado.name() == 'PENDIENTE'} ? 'badge bg-warning text-dark' :
